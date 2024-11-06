@@ -1,0 +1,44 @@
+name: Workflow1 test
+on: push
+jobs:
+  Example-job-1:
+    name: Test wf1 job1
+    runs-on: ubuntu-latest
+    steps:
+      # Display the event that triggered the workflow
+      - run: echo "This job was triggered by a ${{ github.event_name }} event."
+
+      # Runner info
+      - run: echo "Running on a ${{ runner.os }} server hosted by Github."
+
+      #Info about repo and branch
+      - run: echo "Branch is ${{ github.ref }} and repo is ${{ github.repository }}."
+
+      # Use action located in https://github.com/actions
+      - name: Check out repo code
+        uses: actions/checkout@v2
+
+      - run: echo "Your repo has been copied to path ${{ github.workspace }} on runner."
+
+      - name: conditional when event name is pull request
+        if: ${{ github.event_name == 'pull_request'}}
+        run: echo "Yes it's a pull request"
+
+      - name: List files in repo
+        run: ls ${{ github.workspace }}
+
+      - name: Setup dotnet on runner as test
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.x'
+
+      - name: Display dotnet version
+        run: dotnet --version
+
+      - run: echo "Preinstalled tools are here on runner ${{ runner.tool_cache}}."
+
+      - name: List files in tool cache
+        run: |
+          ls ${{ runner.tool_cache}}
+
+      - run: echo "Job1 status is ${{ job.status }}."
